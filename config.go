@@ -1,4 +1,4 @@
-package googleDocs
+package gwrap
 
 import (
 	"golang.org/x/oauth2"
