@@ -1,6 +1,6 @@
 module github.com/JPratama7/gwrap
 
-go 1.20
+go 1.18
 
 require (
 	golang.org/x/oauth2 v0.7.0
