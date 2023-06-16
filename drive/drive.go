@@ -14,6 +14,10 @@ func NewGoogleDrive(srvDrive *drive.Service) (res GoogleDrive) {
 	return
 }
 
+func (gd *GoogleDrive) Service() *drive.Service {
+	return gd.srv
+}
+
 func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string) (fileDupId string, err error) {
 	file, err := gd.srv.Files.Copy(fileId, &drive.File{Name: filename, Description: desc}).Do()
 	if err != nil {
