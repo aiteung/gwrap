@@ -43,11 +43,13 @@ func main() {
 		return
 	}
 
+	gdrService := gdrive.NewGoogleDrive(srvDrive)
+	gdcsService := gdocs.NewGoogleDocs(srvDocs)
 	// Prints the title of the requested doc:
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
 	docId := "1QqahFyNzCC6u6cEg0oGt8PP37yv-LmXMEZtZejmpiRk"
 
-	docDup, err := gdrive.CreateDuplicate(srvDrive, docId, "DUP 1", "TESTING DUPLICATE")
+	docDup, err := gdrService.CreateDuplicate(docId, "DUP 1", "TESTING DUPLICATE")
 	if err != nil {
 		log.Fatalf("Unable to create duplicate: %v\n", err)
 		return
@@ -68,13 +70,13 @@ func main() {
 	listReplace = append(listReplace, gdocs.ReplaceTextDocs("{{TTL}}", "12-12-2022"))
 	listReplace = append(listReplace, gdocs.ReplaceTextDocs("{{TTL}}", "12-12-2022"))
 
-	err = gdocs.FindAndReplaceOne(srvDocs, docDup, listReplace...)
+	err = gdcsService.FindAndReplace(docDup, listReplace...)
 	if err != nil {
 		log.Fatalf("Unable to find and replace: %v", err)
 		return
 	}
 
-	res, err := gdrive.DownloadFile(srvDrive, docDup, "application/pdf")
+	res, err := gdrService.DownloadFile(docDup, "application/pdf")
 	if err != nil {
 		log.Fatalf("Unable to retrieve data from document: %v", err)
 	}

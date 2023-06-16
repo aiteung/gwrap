@@ -5,8 +5,17 @@ import (
 	"net/http"
 )
 
-func CreateDuplicate(srvDrive *drive.Service, fileId, filename, desc string) (fileDupId string, err error) {
-	file, err := srvDrive.Files.Copy(fileId, &drive.File{Name: filename, Description: desc}).Do()
+type GoogleDrive struct {
+	srv *drive.Service
+}
+
+func NewGoogleDrive(srvDrive *drive.Service) (res GoogleDrive) {
+	res = GoogleDrive{srv: srvDrive}
+	return
+}
+
+func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string) (fileDupId string, err error) {
+	file, err := gd.srv.Files.Copy(fileId, &drive.File{Name: filename, Description: desc}).Do()
 	if err != nil {
 		return
 	}
@@ -21,10 +30,10 @@ func CreateDuplicate(srvDrive *drive.Service, fileId, filename, desc string) (fi
 	return
 }
 
-func DeleteFiles(srvDrive *drive.Service, fileId ...string) (fileStatus map[string]bool, err error) {
+func (gd *GoogleDrive) DeleteFiles(fileId ...string) (fileStatus map[string]bool, err error) {
 	fileStat := make(map[string]bool, len(fileId))
 	for _, v := range fileId {
-		er := srvDrive.Files.Delete(v).Do()
+		er := gd.srv.Files.Delete(v).Do()
 		if er != nil {
 			fileStat[v] = false
 			continue
@@ -36,8 +45,7 @@ func DeleteFiles(srvDrive *drive.Service, fileId ...string) (fileStatus map[stri
 	return
 }
 
-func DownloadFile(srvDrive *drive.Service, fileId, mimeType string) (res *http.Response, err error) {
-	res, err = srvDrive.Files.Export(fileId, mimeType).Download()
-
+func (gd *GoogleDrive) DownloadFile(fileId, mimeType string) (res *http.Response, err error) {
+	res, err = gd.srv.Files.Export(fileId, mimeType).Download()
 	return
 }
