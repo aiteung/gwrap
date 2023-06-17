@@ -7,7 +7,7 @@ import (
 	gdocs "github.com/JPratama7/gwrap/docs"
 	gdrive "github.com/JPratama7/gwrap/drive"
 	"google.golang.org/api/docs/v1"
-	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/drive/v2"
 	"google.golang.org/api/option"
 
 	"io"
@@ -17,7 +17,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	filepath := "./credential.json"
+	filepath := "./credentials.json"
 	// If modifying these scopes, delete your previously saved token.json.
 	//b, err := os.ReadFile(filepath)
 	//if err != nil {
@@ -49,7 +49,7 @@ func main() {
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
 	docId := "1QqahFyNzCC6u6cEg0oGt8PP37yv-LmXMEZtZejmpiRk"
 
-	docDup, err := gdrService.CreateDuplicate(docId, "DUP 1", "TESTING DUPLICATE")
+	docDup, err := gdrService.CreateDuplicate(docId, "DUP 1 MANTAP BHANK", "TESTING DUPLICATE")
 	if err != nil {
 		log.Fatalf("Unable to create duplicate: %v\n", err)
 		return

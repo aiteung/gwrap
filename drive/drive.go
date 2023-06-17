@@ -1,7 +1,7 @@
 package drive
 
 import (
-	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/drive/v2"
 	"net/http"
 )
 
@@ -19,7 +19,7 @@ func (gd *GoogleDrive) Service() *drive.Service {
 }
 
 func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string) (fileDupId string, err error) {
-	file, err := gd.srv.Files.Copy(fileId, &drive.File{Name: filename, Description: desc}).Do()
+	file, err := gd.srv.Files.Copy(fileId, &drive.File{Title: filename, Description: desc}).Do()
 	if err != nil {
 		return
 	}
@@ -53,3 +53,22 @@ func (gd *GoogleDrive) DownloadFile(fileId, mimeType string) (res *http.Response
 	res, err = gd.srv.Files.Export(fileId, mimeType).Download()
 	return
 }
+
+func (gd *GoogleDrive) GetURI(fileId string) (url string, err error) {
+	res, err := gd.srv.Files.Get(fileId).Do()
+	url = res.WebViewLink
+	if url == "" {
+		url = res.WebContentLink
+	}
+	if url == "" {
+		url = res.AlternateLink
+	}
+	return
+}
+
+// TODO: UploadFile
+//func (gd *GoogleDrive) UploadFile(fileId string) (err error) {
+//	resx, err := gd.srv.Files.Create(fileId).Do()
+//	fmt.Printf("URI: %+v\n", resx)
+//	return
+//}
