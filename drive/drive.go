@@ -1,8 +1,12 @@
 package drive
 
 import (
+	"fmt"
 	"google.golang.org/api/drive/v2"
+	"io"
 	"net/http"
+	"os"
+	"time"
 )
 
 type GoogleDrive struct {
@@ -66,9 +70,54 @@ func (gd *GoogleDrive) GetURI(fileId string) (url string, err error) {
 	return
 }
 
-// TODO: UploadFile
-//func (gd *GoogleDrive) UploadFile(fileId string) (err error) {
-//	resx, err := gd.srv.Files.Create(fileId).Do()
-//	fmt.Printf("URI: %+v\n", resx)
-//	return
-//}
+func (gd *GoogleDrive) UploadFile(fileName, mimeType, filePath string, permission *drive.Permission) (fileId string, err error) {
+	fileData := drive.File{
+		Title:       fileName,
+		CreatedDate: time.Now().Format(time.RFC3339),
+	}
+
+	open, err := os.Open(filePath)
+	if err != nil {
+		return
+	}
+
+	buffer := make([]byte, 512)
+	_, err = open.Read(buffer)
+	if err != nil {
+		err = fmt.Errorf("could not read file: %v", err)
+		return
+	}
+	_, err = open.Seek(0, io.SeekStart)
+	if err != nil {
+		err = fmt.Errorf("could not revert file offset: %v", err)
+		return
+	}
+
+	switch mimeType {
+	case "":
+		fileData.MimeType = http.DetectContentType(buffer)
+	default:
+		fileData.MimeType = mimeType
+	}
+
+	fileRes, err := gd.srv.Files.Insert(&fileData).Media(open).Do()
+	if err != nil {
+		return
+	}
+
+	fileId = fileRes.Id
+	if fileId == "" {
+		fileId = fileRes.DriveId
+	}
+
+	permission_ := permission
+	if permission == nil {
+		permission_ = &drive.Permission{
+			Type: "anyone",
+			Role: "reader",
+		}
+	}
+
+	_, err = gd.srv.Permissions.Insert(fileId, permission_).Do()
+	return
+}
