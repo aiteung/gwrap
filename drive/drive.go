@@ -121,3 +121,44 @@ func (gd *GoogleDrive) UploadFile(fileName, mimeType, filePath string, permissio
 	_, err = gd.srv.Permissions.Insert(fileId, permission_).Do()
 	return
 }
+func (gd *GoogleDrive) UploadFileReader(fileName, mimeType string, fileReader io.ReadSeeker, permission *drive.Permission) (fileId string, err error) {
+	fileData := drive.File{
+		Title:       fileName,
+		CreatedDate: time.Now().Format(time.RFC3339),
+	}
+	fileData.MimeType = mimeType
+
+	if mimeType == "" {
+		buffer := make([]byte, 512)
+		if _, er := fileReader.Read(buffer); er != nil {
+			err = fmt.Errorf("could not read file: %v", er)
+			return
+		}
+		if _, er := fileReader.Seek(0, io.SeekStart); er != nil {
+			err = fmt.Errorf("could not revert file offset: %v", er)
+			return
+		}
+		fileData.MimeType = http.DetectContentType(buffer)
+	}
+
+	fileRes, err := gd.srv.Files.Insert(&fileData).Media(fileReader).Do()
+	if err != nil {
+		return
+	}
+
+	fileId = fileRes.Id
+	if fileId == "" {
+		fileId = fileRes.DriveId
+	}
+
+	permission_ := permission
+	if permission == nil {
+		permission_ = &drive.Permission{
+			Type: "anyone",
+			Role: "reader",
+		}
+	}
+
+	_, err = gd.srv.Permissions.Insert(fileId, permission_).Do()
+	return
+}
