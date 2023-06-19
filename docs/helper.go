@@ -21,3 +21,9 @@ func AddTable(column, rows int64) *docs.Request {
 	table.Rows = rows
 	return temp
 }
+
+func InsertImage(link string, location *docs.Location) *docs.Request {
+	return &docs.Request{
+		InsertInlineImage: &docs.InsertInlineImageRequest{Location: location, Uri: link},
+	}
+}
