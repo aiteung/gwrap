@@ -22,8 +22,24 @@ func AddTable(column, rows int64) *docs.Request {
 	return temp
 }
 
-func InsertImage(link string, location *docs.Location) *docs.Request {
+func InsertImage(link string, location *docs.Location, size float64) *docs.Request {
+	heightweight := docs.Dimension{
+		Magnitude:       size,
+		Unit:            "PT",
+		ForceSendFields: nil,
+		NullFields:      nil,
+	}
+
+	if size == 0 {
+		heightweight.Magnitude = 128
+	}
+
+	sizeD := &docs.Size{
+		Height: &heightweight,
+		Width:  &heightweight,
+	}
+
 	return &docs.Request{
-		InsertInlineImage: &docs.InsertInlineImageRequest{Location: location, Uri: link},
+		InsertInlineImage: &docs.InsertInlineImageRequest{Location: location, Uri: link, ObjectSize: sizeD},
 	}
 }
