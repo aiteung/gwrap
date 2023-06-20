@@ -151,14 +151,13 @@ func (gd *GoogleDrive) UploadFileReader(fileName, mimeType string, fileReader io
 		fileId = fileRes.DriveId
 	}
 
-	permission_ := permission
 	if permission == nil {
-		permission_ = &drive.Permission{
+		permission = &drive.Permission{
 			Type: "anyone",
 			Role: "reader",
 		}
 	}
 
-	_, err = gd.srv.Permissions.Insert(fileId, permission_).Do()
+	_, err = gd.srv.Permissions.Insert(fileId, permission).Do()
 	return
 }
