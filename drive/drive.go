@@ -125,8 +125,8 @@ func (gd *GoogleDrive) UploadFileReader(fileName, mimeType string, fileReader io
 	fileData := drive.File{
 		Title:       fileName,
 		CreatedDate: time.Now().Format(time.RFC3339),
+		MimeType:    mimeType,
 	}
-	fileData.MimeType = mimeType
 
 	if mimeType == "" {
 		buffer := make([]byte, 512)
