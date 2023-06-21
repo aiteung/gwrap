@@ -60,7 +60,7 @@ func main() {
 	// Prints the title of the requested doc:
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
 
-	loc, err := gdrService.FindTextLocation("1s6cIpltLDhwu2nxyORPV-A1Q0nvlq8yz0onLLR1D0BM", "{{CROT}}")
+	loc, err := gdrService.FindTextLocation("ID", "{{CROT}}")
 
 	fmt.Printf("crooot : %s\n", err)
 	fmt.Printf("loc : %+v\n", loc)

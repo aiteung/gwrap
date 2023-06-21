@@ -47,7 +47,7 @@ func main() {
 	gdcsService := gdocs.NewGoogleDocs(srvDocs)
 	// Prints the title of the requested doc:
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
-	docId := "1QqahFyNzCC6u6cEg0oGt8PP37yv-LmXMEZtZejmpiRk"
+	docId := "ID"
 
 	docDup, err := gdrService.CreateDuplicate(docId, "DUP 1 MANTAP BHANK", "TESTING DUPLICATE")
 	if err != nil {

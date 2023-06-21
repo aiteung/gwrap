@@ -2,13 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	gwrp "github.com/JPratama7/gwrap"
-	gdrive "github.com/JPratama7/gwrap/drive"
+	gdocs "github.com/JPratama7/gwrap/docs"
 	"google.golang.org/api/docs/v1"
 	"google.golang.org/api/drive/v2"
 	"google.golang.org/api/option"
-
 	"log"
 )
 
@@ -49,19 +47,30 @@ func main() {
 	}
 	client := gwrp.GetClient(cfg, "token.json")
 
-	//srvDocs, err := docs.NewService(ctx, option.WithHTTPClient(client))
-	srvDrive, err := drive.NewService(ctx, option.WithHTTPClient(client))
+	srvDocs, err := docs.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Unable to retrieve Docs client: %v", err)
 		return
 	}
 
-	gdrService := gdrive.NewGoogleDrive(srvDrive)
+	gdrService := gdocs.NewGoogleDocs(srvDocs)
 	//gdcsService := gdocs.NewGoogleDocs(srvDocs)
 	// Prints the title of the requested doc:
-	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
-	docId := "ID"
+	const linkQr = ""
+	const id = "ID"
+	loc, err := gdrService.FindTextLocation(id, "ID")
+	//loc2, err := gdrService.FindTextLocation(id, "{{STUD}}")
+	if err != nil {
+		log.Fatalf("Unable to retrieve documents: %v", err)
+		return
+	}
 
-	crot, er := gdrService.GetURI(docId)
-	fmt.Printf("%+v, %+v\n", crot, er)
+	//fmt.Printf("loc : %+v\n", strings.Contains("{{TTD}}", "{{TTD}}"))
+
+	err = gdrService.FindAndReplace(id, gdocs.InsertImage(linkQr, &loc, 128))
+	//if err != nil {
+	//	log.Fatalf("Unable to retrieve documents: %v", err)
+	//	return
+	//}
+
 }

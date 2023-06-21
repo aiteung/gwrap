@@ -4,6 +4,7 @@ Simple Package that wrap google-api to make it easy to use.
 currently feature :
  - Duplicate Files
  - Upload File and auto-detect mimetype if not given
+ - Get Location from text
  - Get URI from file id drive
  - Delete files
  - Find and Replace Text
