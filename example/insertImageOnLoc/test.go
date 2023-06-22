@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	gwrp "github.com/JPratama7/gwrap"
 	gdocs "github.com/JPratama7/gwrap/docs"
+	gdrive "github.com/JPratama7/gwrap/drive"
 	"google.golang.org/api/docs/v1"
-	"google.golang.org/api/drive/v2"
+	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/option"
 	"log"
 )
@@ -48,26 +50,29 @@ func main() {
 	client := gwrp.GetClient(cfg, "token.json")
 
 	srvDocs, err := docs.NewService(ctx, option.WithHTTPClient(client))
+	srvDrive, err := drive.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
 		log.Fatalf("Unable to retrieve Docs client: %v", err)
 		return
 	}
 
 	gdrService := gdocs.NewGoogleDocs(srvDocs)
+	gdsService := gdrive.NewGoogleDrive(srvDrive)
 	//gdcsService := gdocs.NewGoogleDocs(srvDocs)
 	// Prints the title of the requested doc:
-	const linkQr = ""
+	const qrId = "ID"
 	const id = "ID"
-	loc, err := gdrService.FindTextLocation(id, "ID")
-	//loc2, err := gdrService.FindTextLocation(id, "{{STUD}}")
+
+	qrLink, err := gdsService.GetURI(qrId)
+	loc, err := gdrService.FindTextLocation(id, "{{TTD}}")
 	if err != nil {
 		log.Fatalf("Unable to retrieve documents: %v", err)
 		return
 	}
 
-	//fmt.Printf("loc : %+v\n", strings.Contains("{{TTD}}", "{{TTD}}"))
+	fmt.Printf("loc : %+v\n", loc)
 
-	err = gdrService.FindAndReplace(id, gdocs.InsertImage(linkQr, &loc, 128))
+	err = gdrService.FindAndReplace(id, gdocs.InsertImage(qrLink, &loc, 128))
 	//if err != nil {
 	//	log.Fatalf("Unable to retrieve documents: %v", err)
 	//	return

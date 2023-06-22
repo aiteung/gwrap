@@ -49,7 +49,7 @@ func main() {
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
 	docId := "ID"
 
-	docDup, err := gdrService.CreateDuplicate(docId, "DUP 1 MANTAP BHANK", "TESTING DUPLICATE")
+	docDup, err := gdrService.CreateDuplicate(docId, "DUP 1 MANTAP BHANK", "TESTING DUPLICATE", nil)
 	if err != nil {
 		log.Fatalf("Unable to create duplicate: %v\n", err)
 		return

@@ -22,8 +22,16 @@ func (gd *GoogleDrive) Service() *drive.Service {
 	return gd.srv
 }
 
-func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string) (fileDupId string, err error) {
+func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string, permission *drive.Permission) (fileDupId string, err error) {
 	file, err := gd.srv.Files.Copy(fileId, &drive.File{Name: filename, Description: desc}).Do()
+
+	if permission == nil {
+		permission = &drive.Permission{
+			Type: "anyone",
+			Role: "writer",
+		}
+	}
+
 	if err != nil {
 		return
 	}
@@ -33,6 +41,7 @@ func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string) (fileDupId
 		return
 	case false:
 		fileDupId = file.Id
+		_, err = gd.srv.Permissions.Create(fileDupId, permission).Do()
 		return
 	}
 	return

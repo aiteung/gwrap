@@ -60,7 +60,7 @@ func main() {
 	//gdcsService := gdocs.NewGoogleDocs(srvDocs)
 	// Prints the title of the requested doc:
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
-	docId := "1GgvAxDX5m2HvwKUDP9AhZd4VfBL7p41t"
+	docId := "ID"
 
 	crot, er := gdrService.GetURI(docId)
 	fmt.Printf("%+v, %+v\n", crot, er)
