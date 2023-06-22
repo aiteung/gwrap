@@ -23,7 +23,6 @@ func (gd *GoogleDrive) Service() *drive.Service {
 }
 
 func (gd *GoogleDrive) CreateDuplicate(fileId, filename, desc string) (fileDupId string, err error) {
-	//file, err := gd.srv.Files.Copy(fileId, &drive.File{Title: filename, Description: desc}).Do()
 	file, err := gd.srv.Files.Copy(fileId, &drive.File{Name: filename, Description: desc}).Do()
 	if err != nil {
 		return
@@ -61,23 +60,14 @@ func (gd *GoogleDrive) DownloadFile(fileId, mimeType string) (res *http.Response
 
 func (gd *GoogleDrive) GetURI(fileId string) (url string, err error) {
 	res, err := gd.srv.Files.Get(fileId).Fields("webContentLink", "webViewLink").Do()
-	fmt.Printf("res : %+v\n", res)
-	url = res.WebViewLink
+	url = res.WebContentLink
 	if url == "" {
-		url = res.WebContentLink
+		url = res.WebViewLink
 	}
-	//if url == "" {
-	//	url = res.AlternateLink
-	//}
 	return
 }
 
 func (gd *GoogleDrive) UploadFile(fileName, mimeType, filePath string, permission *drive.Permission) (fileId string, err error) {
-	//fileData := drive.File{
-	//	Title:       fileName,
-	//	CreatedDate: time.Now().Format(time.RFC3339),
-	//}
-
 	fileData := drive.File{
 		Name:        fileName,
 		CreatedTime: time.Now().Format(time.RFC3339),
@@ -107,7 +97,6 @@ func (gd *GoogleDrive) UploadFile(fileName, mimeType, filePath string, permissio
 		fileData.MimeType = mimeType
 	}
 
-	//fileRes, err := gd.srv.Files.Insert(&fileData).Media(open).Do()
 	fileRes, err := gd.srv.Files.Create(&fileData).Media(open).Do()
 	if err != nil {
 		return
@@ -130,11 +119,6 @@ func (gd *GoogleDrive) UploadFile(fileName, mimeType, filePath string, permissio
 	return
 }
 func (gd *GoogleDrive) UploadFileReader(fileName, mimeType string, fileReader io.ReadSeeker, permission *drive.Permission) (fileId string, err error) {
-	//fileData := drive.File{
-	//	Title:       fileName,
-	//	CreatedDate: time.Now().Format(time.RFC3339),
-	//	MimeType:    mimeType,
-	//}
 	fileData := drive.File{
 		Name:        fileName,
 		CreatedTime: time.Now().Format(time.RFC3339),

@@ -61,7 +61,7 @@ func main() {
 	// Prints the title of the requested doc:
 	// https://docs.google.com/document/d/195j9eDD3ccgjQRttHhJPymLJUCOUjs-jmwTrekvdjFE/edit
 
-	fileId, err := gdrService.UploadFile("blank.pdf", "", "./blank.pdf", &drive.Permission{Type: "anyone", Role: "owner"})
+	fileId, err := gdrService.UploadFile("blank.pdf", "", "./blank.pdf", nil)
 	crot, err := gdrService.GetURI(fileId)
 	fmt.Printf("fileId : %s\n", fileId)
 	fmt.Printf("Link : %s\n", crot)
