@@ -7,7 +7,7 @@ import (
 	gdocs "github.com/JPratama7/gwrap/docs"
 	gdrive "github.com/JPratama7/gwrap/drive"
 	"google.golang.org/api/docs/v1"
-	"google.golang.org/api/drive/v2"
+	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/option"
 
 	"io"
