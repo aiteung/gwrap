@@ -2,11 +2,12 @@ package drive
 
 import (
 	"fmt"
-	"google.golang.org/api/drive/v3"
 	"io"
 	"net/http"
 	"os"
 	"time"
+
+	"google.golang.org/api/drive/v3"
 )
 
 type GoogleDrive struct {
@@ -67,9 +68,10 @@ func (gd *GoogleDrive) DownloadFile(fileId, mimeType string) (res *http.Response
 	return
 }
 
+// https://stackoverflow.com/questions/70311191/access-to-the-provided-image-was-forbidden-even-though-it-was-uploaded-from-the
 func (gd *GoogleDrive) GetURI(fileId string) (url string, err error) {
-	res, err := gd.srv.Files.Get(fileId).Fields("webContentLink", "webViewLink").Do()
-	url = res.WebContentLink
+	res, err := gd.srv.Files.Get(fileId).Fields("id", "name", "webViewLink", "webContentLink", "thumbnailLink").Do()
+	url = res.ThumbnailLink
 	if url == "" {
 		url = res.WebViewLink
 	}
