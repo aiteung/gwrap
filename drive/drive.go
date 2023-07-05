@@ -1,14 +1,34 @@
 package drive
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"github.com/JPratama7/safe"
+	"github.com/aiteung/gwrap"
 	"google.golang.org/api/drive/v3"
+	"google.golang.org/api/option"
 )
+
+func DriveNewServices(FileCred string, FileToken string) (driveService GoogleDrive) {
+	cfgGoogle, err := gwrap.NewGoogleConfig(FileCred, drive.DriveScope, drive.DriveReadonlyScope)
+	if err != nil {
+		return
+	}
+	client := gwrap.GetClient(cfgGoogle, FileToken)
+	curCtx := context.Background()
+	srvDrive := safe.AsResult(drive.NewService(curCtx, option.WithHTTPClient(client)))
+	if srvDrive.IsErr() {
+		log.Print("Google Drive or Docs Service Unavailable")
+	}
+	driveService = NewGoogleDrive(srvDrive.Unwrap())
+	return
+}
 
 type GoogleDrive struct {
 	srv *drive.Service

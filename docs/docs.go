@@ -1,10 +1,30 @@
 package docs
 
 import (
+	"context"
 	"errors"
-	"google.golang.org/api/docs/v1"
 	"log"
+
+	"github.com/JPratama7/safe"
+	"github.com/aiteung/gwrap"
+	"google.golang.org/api/docs/v1"
+	"google.golang.org/api/option"
 )
+
+func DocsNewServices(FileCred string, FileToken string) (docsService GoogleDocs) {
+	cfgGoogle, err := gwrap.NewGoogleConfig(FileCred, docs.DocumentsScope, docs.DocumentsReadonlyScope)
+	if err != nil {
+		return
+	}
+	client := gwrap.GetClient(cfgGoogle, FileToken)
+	curCtx := context.Background()
+	srvDocs := safe.AsResult(docs.NewService(curCtx, option.WithHTTPClient(client)))
+	if srvDocs.IsErr() {
+		log.Print("Google Drive or Docs Service Unavailable")
+	}
+	docsService = NewGoogleDocs(srvDocs.Unwrap())
+	return
+}
 
 type GoogleDocs struct {
 	srv *docs.Service

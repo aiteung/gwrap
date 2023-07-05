@@ -1,8 +1,9 @@
 package docs
 
 import (
-	"google.golang.org/api/docs/v1"
 	"strings"
+
+	"google.golang.org/api/docs/v1"
 )
 
 func ReplaceTextDocs(char, text string) *docs.Request {
@@ -55,10 +56,10 @@ func searchTextElement(pattern string, elements ...*docs.ParagraphElement) (res 
 			continue
 		}
 
-		curString := strings.ReplaceAll(v.TextRun.Content, "\n", "")
-		curString = strings.ReplaceAll(v.TextRun.Content, "\t", "")
-		curString = strings.ReplaceAll(v.TextRun.Content, " ", "")
-		if strings.Contains(curString, pattern) {
+		curString1 := strings.ReplaceAll(v.TextRun.Content, "\n", "")
+		curString2 := strings.ReplaceAll(curString1, "\t", "")
+		curString3 := strings.ReplaceAll(curString2, " ", "")
+		if strings.Contains(curString3, pattern) {
 			res = v
 			break
 		}
